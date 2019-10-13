@@ -1,0 +1,2 @@
+# jtranslib
+javascript translation library

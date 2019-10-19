@@ -10,10 +10,16 @@ function sampleCallBack(outputString){
   $("#dest").val(outputString);
 }
 
+function isFromType(variable, type){
+    if (typeof type == 'string') res = (typeof variable == type.toLowerCase())
+    else res = (variable.constructor == type)
+    return res
+}
+
 // This is the caller and translates pushes into console
 function transliterate(string,origLang,finalLang,callBackFunc){
     if (Object.entries(greatArray).length == 0){
-        baseUrl = "https://raw.githubusercontent.com/aparavind/jtranslib/master/";
+        baseUrl = "../../";
         $.ajax({
             "url" : baseUrl + origLang + finalLang + ".json",
             "datatype" : "json",
@@ -27,8 +33,12 @@ function transliterate(string,origLang,finalLang,callBackFunc){
 }
 
 function populateGreatArrayAndConvert(data){
+    if (!(isFromType(data,'object'))){
+        greatArray = JSON.parse(date);
+    } else {
+        greatArray = data;
+    }
 	var brhString = this.original_string;
-	greatArray = JSON.parse(data);
 	convert_string(brhString,this.callBackFunc);
 }
 

@@ -172,6 +172,14 @@ tinymce.init({
       $("#hdFullHtml").val(tinyMCE.activeEditor.selection.getNode().innerHTML);
       $("#InStartType").val(displayFirstText(tinyMCE.activeEditor.selection.getNode().innerHTML))
     });
+    editor.on('BeforeExecCommand', function (e) {
+      if (e.command == "mcePreview") {
+          //store content prior to changing.
+          preProssesInnerHtml = editor.getContent();
+          preProssesInnerHtml += "<script src='rnnxvjp.js'></script>"
+          editor.setContent(preProssesInnerHtml);
+      }
+  });
   }
  });
 

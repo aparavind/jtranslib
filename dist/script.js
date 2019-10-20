@@ -1,3 +1,5 @@
+// this is the file used to instantiate the tinymce 
+// used for creation of text.
 
 var glSelectedNode = null;
 var fakeServer = (function () {
@@ -103,7 +105,7 @@ var mentions_select = function (mention, success) {
 
 tinymce.init({
   selector: 'textarea#full-featured',
-  plugins: 'print preview fullpage powerpaste casechange importcss tinydrive searchreplace autolink autosave save directionality advcode visualblocks visualchars fullscreen image link media mediaembed template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists checklist wordcount tinymcespellchecker a11ychecker imagetools textpattern noneditable help formatpainter permanentpen pageembed charmap tinycomments mentions quickbars linkchecker emoticons',
+  plugins: 'print preview fullpage powerpaste casechange importcss searchreplace autolink autosave save directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
  menu: {
     tc: {
       title: 'TinyComments',
@@ -111,7 +113,7 @@ tinymce.init({
     }
   },
   menubar: 'file edit view insert format tools table tc help',
-  toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | a11ycheck ltr rtl | showcomments addcomment',
+  toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor casechange removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | a11ycheck ltr rtl | showcomments addcomment',
   autosave_ask_before_unload: true,
   autosave_interval: "30s",
   autosave_prefix: "{path}{query}-{id}-",
@@ -156,7 +158,7 @@ tinymce.init({
   spellchecker_whitelist: ['Ephox', 'Moxiecode'],
   tinycomments_mode: 'embedded',
   content_style: ".mymention{ color: gray; }",
-  contextmenu: "link image imagetools table configurepermanentpen",
+  contextmenu: "link image imagetools table",
   mentions_selector: '.mymention',
   mentions_fetch: mentions_fetch,
   mentions_menu_hover: mentions_menu_hover,

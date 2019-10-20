@@ -17,18 +17,19 @@ function isFromType(variable, type){
 }
 
 // This is the caller and translates pushes into console
-function transliterate(string,origLang,finalLang,callBackFunc){
+function transliterate(string,origLang,finalLang,callBackFunc,otherArgs){
     if (Object.entries(greatArray).length == 0){
-        baseUrl = "../../";
+        baseUrl = "../convertJsons/";
         $.ajax({
             "url" : baseUrl + origLang + finalLang + ".json",
             "datatype" : "json",
             "original_string" : string,
             "callBackFunc" : callBackFunc,
+            "otherArgs" : otherArgs,
             "success" : populateGreatArrayAndConvert
         });
     } else {
-	    convert_string(string,callBackFunc);
+	    convert_string(string,callBackFunc,otherArgs);
     }
 }
 
@@ -39,11 +40,11 @@ function populateGreatArrayAndConvert(data){
         greatArray = data;
     }
 	var brhString = this.original_string;
-	convert_string(brhString,this.callBackFunc);
+	convert_string(brhString,this.callBackFunc,this.otherArgs);
 }
 
 // This converts the string
-function convert_string(string,callBackFunc){
+function convert_string(string,callBackFunc,otherArgs){
 	var detClass = {
         "brhMaxSize" : 8,
         "previousMinussable" : 0
@@ -70,7 +71,7 @@ function convert_string(string,callBackFunc){
 	
     } while (1);
     console.log(outString);
-    callBackFunc(outString);
+    callBackFunc(outString,otherArgs);
 }
 
 function removeLastChar(outString,detClass){

@@ -19,7 +19,8 @@ function isFromType(variable, type){
 // This is the caller and translates pushes into console
 function transliterate(string,origLang,finalLang,callBackFunc,otherArgs){
     if (Object.entries(greatArray).length == 0){
-        baseUrl = "../convertJsons/";
+        baseUrl = "./convertJsons/";
+	console.log(document.domain);
         $.ajax({
             "url" : baseUrl + origLang + finalLang + ".json",
             "datatype" : "json",

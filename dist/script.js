@@ -105,7 +105,7 @@ var mentions_select = function (mention, success) {
 
 tinymce.init({
   selector: 'textarea#full-featured',
-  plugins: 'print preview fullpage powerpaste casechange importcss searchreplace autolink autosave save directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
+  plugins: 'print preview importcss searchreplace autolink autosave save directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
  menu: {
     tc: {
       title: 'TinyComments',
@@ -113,7 +113,7 @@ tinymce.init({
     }
   },
   menubar: 'file edit view insert format tools table tc help',
-  toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor casechange removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | a11ycheck ltr rtl | showcomments addcomment',
+  toolbar: 'undo redo save | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor  removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | a11ycheck ltr rtl | showcomments addcomment',
   autosave_ask_before_unload: true,
   autosave_interval: "30s",
   autosave_prefix: "{path}{query}-{id}-",
@@ -169,10 +169,10 @@ tinymce.init({
       console.log('Element clicked:', e.target.nodeName);
     });
     editor.on('NodeChange',function (e){
-      glSelectedNode = tinyMCE.activeEditor.selection.getNode();
-      console.log(tinyMCE.activeEditor.selection.getNode().innerHTML);
-      $("#hdFullHtml").val(tinyMCE.activeEditor.selection.getNode().innerHTML);
-      $("#InStartType").val(displayFirstText(tinyMCE.activeEditor.selection.getNode().innerHTML))
+      syncLinePreview();
+    });
+    editor.on('keyup',function (e){
+      syncLinePreview();
     });
     editor.on('BeforeExecCommand', function (e) {
       if (e.command == "mcePreview") {
@@ -185,23 +185,9 @@ tinymce.init({
   }
  });
 
-function putText(){
-  originalHtml = $("#hdFullHtml").val();
-  newText = $("#InStartType").val();
-  if (newText){
-//    tinyMCE.activeEditor.selection.getNode()).setHTML();
-    tinymce.activeEditor.dom.setHTML(glSelectedNode, getModifiedHtml(originalHtml,newText));
-  //tinymce.activeEditor.execCommand('mceInsertContent', false, $("#InstartType").val());
-    transliterate(newText,"brh","Dvn",function(dvnText){
-      $("#InShowPreviewOfline").val(dvnText);
-    });
-    $("#InStartType").focus();
-  }
-}
 
-function convertMe(){
-  strBaraha = $("#InstartType").val();
-  $("#InShowPreviewOfline").val(convertToDvng(strBaraha));
+function convertMe(dvnText){
+    $("#InShowPreviewOfline").text(dvnText);
 }
 
 // Simple function which displays the text
@@ -211,11 +197,41 @@ function displayFirstText(a){
   return b[0];
 }
 
-// replace the tinymce with new text
-function getModifiedHtml(originalHtml,newText){
-  r = /^([^<]+)/;
-  b =  r.exec(originalHtml);
-  oldText = b[0];
-  newHtml = originalHtml.replace(oldText,newText);
-  return newHtml;
+function syncLinePreview(){
+  glSelectedNode = tinyMCE.activeEditor.selection.getNode();
+  bText = displayFirstText(tinyMCE.activeEditor.selection.getNode().innerHTML);
+  transliterate(bText,"brh","Dvn",convertMe,$("#InShowPreviewOfline"));
+}
+
+function saveTextAsFile() {
+  var textToWrite = $("#full-featured").val();
+  alert(textToWrite);
+  var fileName = $("#currentFileName").val();
+  if (fileName == "noValue"){
+    fileName = prompt("Please enter a file Name","noValue");
+    $("#currentFileName").val(fileName);
+  }
+  var textFileAsBlob = new Blob([ textToWrite ], { type: 'text/plain' });
+  var fileNameToSaveAs = fileName;
+
+  var downloadLink = document.createElement("a");
+  downloadLink.download = fileNameToSaveAs;
+  downloadLink.innerHTML = "Download File";
+  if (window.webkitURL != null) {
+    // Chrome allows the link to be clicked without actually adding it to the DOM.
+    downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+  } else {
+    // Firefox requires the link to be added to the DOM before it can be clicked.
+    downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+    downloadLink.onclick = destroyClickedElement;
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+  }
+
+  downloadLink.click();
+}
+
+function destroyClickedElement(event) {
+  // remove the link from the DOM
+  document.body.removeChild(event.target);
 }

@@ -41,7 +41,6 @@
 </head>
 <body>
 <!-- partial:index.partial.html -->
-<div id="InShowPreviewOfline"></div>
 <br>
 <br>
 <input type="hidden" id="hdFullHtml">
@@ -55,7 +54,7 @@
 <script src="https://cdn.tiny.cloud/1/b180wmb12hu5scbjbkk59lr5fr2v60ry13hn5q089c4omg0j/tinymce/5/tinymce.min.js"></script> 
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
 <script src='./dist/translateLib.js?i=2'></script>
-<script  src="./dist/script.js?i=13"></script>
+<script  src="./dist/script.js?i=3F"></script>
 
 </body>
 </html>

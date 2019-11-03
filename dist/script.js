@@ -106,6 +106,7 @@ var mentions_select = function (mention, success) {
 tinymce.init({
   selector: 'textarea#full-featured',
   plugins: 'print preview importcss searchreplace autolink autosave save directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
+  entity_encoding : "raw",
  menu: {
     tc: {
       title: 'TinyComments',
@@ -198,7 +199,55 @@ function displayFirstText(a){
 }
 
 function syncLinePreview(){
+  var prNode = tinyMCE.activeEditor.selection.getNode();
+   var currentWindow = prNode.ownerDocument.defaultView;
+  var currentParentWindow;
+  var positions = [];
+  var rectf;
+
+  while (currentWindow !== window.top) {
+    currentParentWindow = currentWindow.parent;
+    for (let idx = 0; idx < currentParentWindow.frames.length; idx++)
+      if (currentParentWindow.frames[idx] === currentWindow) {
+        for (let frameElement of currentParentWindow.document.getElementsByTagName('iframe')) {
+          if (frameElement.contentWindow === currentWindow) {
+            rectf = frameElement.getBoundingClientRect();
+            positions.push({x: rectf.x, y: rectf.y});
+          }
+        }
+        currentWindow = currentParentWindow;
+        break;
+      }
+  }
+  currentFramePosition =  positions.reduce((accumulator, currentValue) => {
+    return {
+      x: accumulator.x + currentValue.x,
+      y: accumulator.y + currentValue.y
+    };
+  }, { x: 0, y: 0 });
+  
   glSelectedNode = tinyMCE.activeEditor.selection.getNode();
+  var rect = glSelectedNode.getBoundingClientRect();
+
+  
+  var d = document.getElementById('InShowPreviewOfline');
+  if (!d){
+    d = document.createElement('div');
+    document.body.appendChild(d);
+    d.id = 'InShowPreviewOfline'
+  }
+  var rect2 = d.getBoundingClientRect();
+  console.log("Rect2 left:" + rect2.left + " top:" + rect2.top);
+  
+  
+  d.style.left = ( currentFramePosition.x + rect.left-5) +'px';
+  d.style.top = (currentFramePosition.y + rect.top - 40) +'px';
+  d.zIndex = 900;
+  d.style.backgroundColor = "red";
+  d.style.position = "absolute";
+
+
+
   bText = displayFirstText(tinyMCE.activeEditor.selection.getNode().innerHTML);
   transliterate(bText,"brh","Dvn",convertMe,$("#InShowPreviewOfline"));
 }
@@ -234,4 +283,8 @@ function saveTextAsFile() {
 function destroyClickedElement(event) {
   // remove the link from the DOM
   document.body.removeChild(event.target);
+}
+
+function currentFrameAbsolutePosition() {
+
 }
